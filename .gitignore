@@ -1,0 +1,5 @@
+/target/
+/experiments/mls-browser/node_modules/
+/experiments/mls-browser/pkg/
+/experiments/mls-browser/test-results/
+/experiments/mls-browser/playwright-report/

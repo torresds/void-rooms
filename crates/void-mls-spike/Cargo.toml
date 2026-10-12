@@ -1,0 +1,18 @@
+[package]
+name = "void-mls-spike"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+openmls = { version = "=0.9.1", default-features = false, features = ["js"] }
+openmls_basic_credential = "=0.6.0"
+openmls_rust_crypto = "=0.6.0"
+openmls_traits = "=0.6.0"
+getrandom = { version = "=0.2.17", features = ["js"] }
+wasm-bindgen = "=0.2.129"
+

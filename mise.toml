@@ -1,0 +1,21 @@
+[tools]
+node = "24.21.0"
+rust = { version = "1.99.0", components = "clippy,rustfmt" }
+
+[tasks.check]
+run = "cargo check --workspace"
+
+[tasks.build]
+run = "cargo build --workspace"
+
+[tasks.test]
+run = "cargo test --workspace"
+
+[tasks.lint]
+run = "cargo clippy --workspace --all-targets -- -D warnings"
+
+[tasks.format]
+run = "cargo fmt --all -- --check"
+
+[tasks.wasm]
+run = "cargo check --workspace --target wasm32-unknown-unknown"

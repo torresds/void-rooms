@@ -1,0 +1,3 @@
+[workspace]
+members = ["crates/void-client-core", "crates/void-types", "crates/void-mls-spike"]
+resolver = "3"

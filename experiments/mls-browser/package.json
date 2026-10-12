@@ -1,0 +1,16 @@
+{
+  "name": "void-rooms-mls-browser-lab",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:wasm": "cargo build --manifest-path ../../Cargo.toml -p void-mls-spike --release --target wasm32-unknown-unknown && wasm-bindgen ../../target/wasm32-unknown-unknown/release/void_mls_spike.wasm --target web --out-dir pkg",
+    "serve": "node server.mjs",
+    "install:browsers": "playwright install chromium firefox",
+    "test": "npm run build:wasm && playwright test",
+    "test:chromium": "npm run build:wasm && playwright test --project=chromium",
+    "test:firefox": "npm run build:wasm && playwright test --project=firefox"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0"
+  }
+}
