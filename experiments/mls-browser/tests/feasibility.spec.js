@@ -131,13 +131,13 @@ test("recovers the last committed state after an IndexedDB transaction abort", a
 
   await page.reload();
   await expect(page.locator("#status")).toHaveText("WebAssembly module initialized");
-  const recovered = await page.evaluate(async ({ aliceKey }) => {
+  const recovered = await page.evaluate(async ({ aliceKey, bobKey }) => {
     const { BrowserMlsLab, loadSnapshot, saveSnapshot } = window.mlsLab;
     const lab = new BrowserMlsLab();
     const alice = await loadSnapshot("alice");
     const bob = await loadSnapshot("bob");
     lab.restore_alice(alice.bytes, new Uint8Array(aliceKey));
-    lab.restore_bob(bob.bytes, new Uint8Array(bob.bytes.slice(10, 42)));
+    lab.restore_bob(bob.bytes, new Uint8Array(bobKey));
     const message = lab.create_alice_message(new TextEncoder().encode("recovered"));
     const revision = await saveSnapshot("alice", alice.revision, lab.snapshot_alice());
     const plaintext = lab.receive_bob_message(message);
