@@ -2,22 +2,33 @@ name: Engineering checks
 
 on:
   pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
+  workflow_dispatch:
+
+concurrency:
+  group: engineering-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  quality:
-    runs-on: ubuntu-latest
+  rust:
+    name: Rust quality
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install mise tools
-        uses: jdx/mise-action@v4
+        uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+
+      - name: Cache Cargo artifacts
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
 
       - name: Install WebAssembly target
         run: rustup target add wasm32-unknown-unknown
@@ -39,3 +50,33 @@ jobs:
 
       - name: Check WebAssembly target
         run: mise run wasm
+
+  browser-feasibility:
+    name: Browser feasibility
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install mise tools
+        uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+
+      - name: Cache Cargo artifacts
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
+
+      - name: Install WebAssembly target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Install Playwright browsers and system dependencies
+        run: npx --yes playwright@1.64.0 install --with-deps chromium firefox
+
+      - name: Install browser lab dependencies
+        working-directory: experiments/mls-browser
+        run: npm ci
+
+      - name: Install wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli --version 0.2.129 --locked
+
+      - name: Run Chromium and Firefox feasibility tests
+        working-directory: experiments/mls-browser
+        run: npm test
